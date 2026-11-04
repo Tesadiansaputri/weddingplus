@@ -92,7 +92,7 @@ Widget _buildLogo() {
   return Transform.translate(
     offset: const Offset(-30.0, -23.0), // Geser ke kiri dan ke atas
     child: Image.asset(
-      'assets/images/logo_header3.png',
+      'assets/images/logo_header.png',
       height: 60,
       errorBuilder: (context, error, stackTrace) {
         return const Row(
