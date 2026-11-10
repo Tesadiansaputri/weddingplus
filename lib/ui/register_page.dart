@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'login_page.dart';
+import 'home_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -77,8 +78,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // TODO: minggu 2 -> panggil API register di sini
 
-    _showMessage('Registrasi berhasil, silakan masuk');
-    _goToLogin();
+    // TODO BACKEND:
+    // Nanti bagian ini diganti dengan pemanggilan API registrasi.
+
+    _showMessage('Registrasi berhasil');
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ),
+      (route) => false,
+    );
   }
 
   Widget _label(String text) {

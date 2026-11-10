@@ -1,21 +1,33 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
 import '../helpers/google_auth.dart';
 import '../helpers/session.dart';
 import 'login_page.dart';
+import 'rencana_page.dart';
+import 'pencarian_page.dart';
+import 'tabungan_pages.dart';
+import 'chat_page.dart';
+import 'atur_tanggal_page.dart';
 
 // Data tugas sementara (dummy). TODO: ganti dengan data dari API.
 class _Task {
   final String title;
   final String date;
   final String priority;
-  bool done = false;
+  bool done;
 
-  _Task({
-    required this.title,
-    required this.date,
-    required this.priority,
-  });
+  _Task({required this.title, required this.date, required this.priority})
+    : done = false;
+}
+
+// Satu kotak di menu "Lainnya".
+class _MenuItem {
+  final IconData icon;
+  final String label;
+
+  const _MenuItem(this.icon, this.label);
 }
 
 class HomePage extends StatefulWidget {
@@ -38,16 +50,46 @@ class _HomePageState extends State<HomePage> {
   // dipasang, Flutter otomatis memakai font bawaan.
   static const String _serif = 'PlayfairDisplay';
 
-  final List<_Task> _tasks = [
-    _Task(title: 'Task 1', date: '19 Mei 2026', priority: 'Sangat Penting'),
-    _Task(title: 'Task 2', date: '23 Mei 2026', priority: 'Penting'),
-    _Task(title: 'Task 3', date: '10 April 2026', priority: 'Penting'),
+  static const List<String> _months = [
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember',
   ];
 
+  final List<_Task> _tasks = [];
+
+  // Isi menu "Lainnya". Tambah atau ubah kotak di sini.
+  // TODO: arahkan tiap kotak ke halaman fiturnya dengan Navigator.push.
+  final List<_MenuItem> _menuItems = const [
+    _MenuItem(Icons.calendar_month_outlined, 'Atur Tanggal'),
+    _MenuItem(Icons.search, 'Cari Layanan'),
+    _MenuItem(Icons.monetization_on_outlined, 'Tabungan'),
+    _MenuItem(Icons.headset_mic_outlined, 'Asisten'),
+    _MenuItem(Icons.chat_bubble_outline, 'Chat'),
+    _MenuItem(Icons.event_note_outlined, 'Jadwal'),
+    _MenuItem(Icons.folder_open_outlined, 'Berkas'),
+  ];
+
+  DateTime? _weddingDate;
+
+  // true = menu "Lainnya" terbuka (panel kaca menggantikan isi Home).
+  bool _menuOpen = false;
+
+  // Titik merah di lonceng. Ubah jadi false kalau tidak ada notifikasi.
+  bool hasNotification = true;
+
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _logout() async {
@@ -59,6 +101,67 @@ class _HomePageState extends State<HomePage> {
       MaterialPageRoute(builder: (context) => const LoginPage()),
       (route) => false,
     );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day} ${_months[date.month - 1]} ${date.year}';
+  }
+
+  String _progressMessage(double progress) {
+    if (progress >= 1) {
+      return 'Semua tugas selesai. Selamat!';
+    }
+    if (progress >= 0.5) {
+      return 'Setengah perjalanan terlewati. Kamu hebat!';
+    }
+    return 'Ayo mulai persiapannya, pelan-pelan saja!';
+  }
+
+  void _handleMenuTap(String menu) {
+    switch (menu) {
+      case 'Cari Layanan':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PencarianPage()),
+        );
+        break;
+
+      case 'Atur Tanggal':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AturTanggalPage()),
+        );
+        break;
+
+      case 'Tabungan':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const TabunganPage(),
+          ),
+        );
+        break;
+
+      case 'Asisten':
+        _showMessage('Fitur Asisten segera hadir');
+        break;
+
+      case 'Chat':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ChatPage()),
+        );
+        break;
+
+      case 'Jadwal':
+        _showMessage('Fitur Jadwal segera hadir');
+        break;
+
+      case 'Berkas':
+        _showMessage('Fitur Berkas segera hadir');
+        break;
+    }
   }
 
   // Kotak kaca (blur + putih transparan) yang dipakai di banyak tempat.
@@ -88,72 +191,68 @@ class _HomePageState extends State<HomePage> {
   // ---------------------------------------------------------------
   // Header: logo, lonceng, dan menu profil
   // ---------------------------------------------------------------
-Widget _buildLogo() {
-  return Transform.translate(
-    offset: const Offset(-30.0, -23.0), // Geser ke kiri dan ke atas
-    child: Image.asset(
-      'assets/images/logo_header.png',
-      height: 60,
-      errorBuilder: (context, error, stackTrace) {
-        return const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.favorite, color: _rose, size: 26),
-            SizedBox(width: 6),
-            Text('wedding+', style: TextStyle(color: _rose, fontSize: 20)),
-          ],
-        );
-      },
-    ),
-  );
-}
-
-  // 1. Pastikan kamu punya variabel status ini di dalam kelas State kamu (di luar method, sejajar dengan variabel lain)
-bool hasNotification = true; // Ubah jadi false kalau sedang tidak ada notifikasi
-
-// 2. Widget _buildBell dengan ikon bawaan & titik merah dinamis
-Widget _buildBell() {
-  return GestureDetector(
-    onTap: () {
-      setState(() {
-        // Contoh: Saat bel diklik, notifikasi dianggap sudah dibaca, jadi titik merahnya hilang
-        hasNotification = false; 
-      });
-      _showMessage('Belum ada notifikasi');
-    },
-    child: Container(
-      width: 40,
-      height: 40,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [BoxShadow(color: Color(0x22000000), blurRadius: 8)],
+  Widget _buildLogo() {
+    return Transform.translate(
+      offset: const Offset(-30.0, -23.0), // Geser ke kiri dan ke atas
+      child: Image.asset(
+        'assets/images/logo_header.png',
+        height: 60,
+        // Kalau gambar belum ada, tampilkan logo sementara.
+        errorBuilder: (context, error, stackTrace) {
+          return const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.favorite, color: _rose, size: 26),
+              SizedBox(width: 6),
+              Text('wedding+', style: TextStyle(color: _rose, fontSize: 20)),
+            ],
+          );
+        },
       ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Tetap pakai ikon bawaan (tidak pakai image)
-          const Icon(Icons.notifications_none, color: _textDark, size: 22),
-          
-          // Titik merah hanya akan muncul HANYA JIKA hasNotification bernilai true
-          if (hasNotification)
-            Positioned(
-              top: 9,
-              right: 10,
-              child: Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
+    );
+  }
+
+  Widget _buildBell() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          // Saat bel diklik, notifikasi dianggap sudah dibaca,
+          // jadi titik merahnya hilang.
+          hasNotification = false;
+        });
+        _showMessage('Belum ada notifikasi');
+      },
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [BoxShadow(color: Color(0x22000000), blurRadius: 8)],
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            const Icon(Icons.notifications_none, color: _textDark, size: 22),
+            // Titik merah hanya muncul kalau hasNotification bernilai true.
+            if (hasNotification)
+              Positioned(
+                top: 9,
+                right: 10,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildProfileMenu() {
     return PopupMenuButton<String>(
@@ -172,9 +271,7 @@ Widget _buildBell() {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(color: Color(0x22000000), blurRadius: 8),
-          ],
+          boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 8)],
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
@@ -199,10 +296,10 @@ Widget _buildBell() {
       children: [
         // Logo di sebelah kiri
         _buildLogo(),
-        
-        // Geser posisi bell & profile ke atas menggunakan Transform.translate
+
+        // Geser posisi bell dan profil ke atas dengan Transform.translate
         Transform.translate(
-          offset: const Offset(0, -8), // Sesuaikan angka ini (-20, -25, atau -30) sampai posisinya pas sejajar
+          offset: const Offset(0, -8),
           child: Padding(
             padding: const EdgeInsets.only(right: 20),
             child: Row(
@@ -243,6 +340,136 @@ Widget _buildBell() {
   }
 
   // ---------------------------------------------------------------
+  // Kartu "Hari Bahagia": tanggal, progres tugas, pesan semangat
+  // ---------------------------------------------------------------
+
+  Widget _buildBannerCard() {
+    // Hitung tugas yang sudah selesai.
+    final doneTasks = _tasks.where((task) => task.done).length;
+    final totalTasks = _tasks.length;
+
+    final progress = totalTasks == 0 ? 0.0 : doneTasks / totalTasks;
+
+    final percent = (progress * 100).round();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: _weddingDate == null
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 12),
+                const Center(
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.calendar_month_outlined,
+                        size: 30,
+                        color: _rose,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Belum ada rencana pernikahan',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: _textDark,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        'Mulai buat rencana pernikahanmu untuk '
+                        'melihat tanggal bahagia dan progres '
+                        'persiapan di sini.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 10, color: _hint),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'HARI BAHAGIA ${Session.userName?.toUpperCase() ?? ''}',
+                  style: const TextStyle(
+                    fontSize: 10,
+                    letterSpacing: 0.8,
+                    color: _textDark,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.calendar_month_outlined,
+                      size: 16,
+                      color: _rose,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      _formatDate(_weddingDate!),
+                      style: const TextStyle(
+                        fontFamily: _serif,
+                        fontSize: 20,
+                        color: _textDark,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '$doneTasks dari $totalTasks tugas selesai',
+                      style: const TextStyle(fontSize: 11, color: _textDark),
+                    ),
+                    Text(
+                      '$percent%',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: _rose,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 6,
+                    color: _rose,
+                    backgroundColor: const Color(0xFFF3D6D0),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _progressMessage(progress),
+                  style: const TextStyle(fontSize: 10, color: _hint),
+                ),
+              ],
+            ),
+    );
+  }
+
+  // ---------------------------------------------------------------
   // Judul bagian + "Lihat Semua"
   // ---------------------------------------------------------------
   Widget _sectionHeader(String title, {String? action}) {
@@ -273,52 +500,57 @@ Widget _buildBell() {
   }
 
   // ---------------------------------------------------------------
-  // Fitur Cepat
+  // Kotak fitur (dipakai di Fitur Cepat dan menu Lainnya)
   // ---------------------------------------------------------------
-  Widget _quickItem(IconData icon, String label) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          // TODO: pindah ke halaman fitur dengan Navigator.push
-          _showMessage('$label (segera hadir)');
-        },
-        child: _glass(
-          radius: 16,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-          child: Column(
-            children: [
-              Icon(icon, color: _textDark, size: 28),
-              const SizedBox(height: 6),
-              SizedBox(
-                height: 28,
-                child: Center(
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 10, color: _textDark),
-                  ),
-                ),
+  Widget _featureTile(IconData icon, String label) {
+  return _glass(
+    radius: 16,
+    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: _textDark, size: 28),
+        const SizedBox(height: 6),
+        SizedBox(
+          height: 28,
+          child: Center(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 10,
+                color: _textDark,
               ),
-            ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
+
+  Widget _quickItem(IconData icon, String label) {
+  return Expanded(
+    child: GestureDetector(
+      onTap: () => _handleMenuTap(label),
+      child: _featureTile(icon, label),
+    ),
+  );
+}
 
   Widget _buildQuickFeatures() {
-    return Row(
-      children: [
-        _quickItem(Icons.calendar_month_outlined, 'Atur Rencana'),
-        const SizedBox(width: 10),
-        _quickItem(Icons.search, 'Cari Layanan'),
-        const SizedBox(width: 10),
-        _quickItem(Icons.groups_outlined, 'Bersama'),
-        const SizedBox(width: 10),
-        _quickItem(Icons.headset_mic_outlined, 'Asisten'),
-      ],
-    );
-  }
+  return Row(
+    children: [
+      _quickItem(Icons.calendar_month_outlined, 'Atur Tanggal'),
+      const SizedBox(width: 10),
+      _quickItem(Icons.search, 'Cari Layanan'),
+      const SizedBox(width: 10),
+      _quickItem(Icons.monetization_on_outlined, 'Tabungan'),
+      const SizedBox(width: 10),
+      _quickItem(Icons.headset_mic_outlined, 'Asisten'),
+    ],
+  );
+}
 
   // ---------------------------------------------------------------
   // Tugas Mendatang
@@ -355,8 +587,7 @@ Widget _buildBell() {
                   style: TextStyle(
                     fontSize: 14,
                     color: _textDark,
-                    decoration:
-                        task.done ? TextDecoration.lineThrough : null,
+                    decoration: task.done ? TextDecoration.lineThrough : null,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -505,9 +736,7 @@ Widget _buildBell() {
                             ],
                           ),
                           const SizedBox(height: 6),
-                          Row(
-                            children: [_chip('Venue'), _chip('Tegal')],
-                          ),
+                          Row(children: [_chip('Venue'), _chip('Tegal')]),
                         ],
                       ),
                     ),
@@ -576,15 +805,106 @@ Widget _buildBell() {
         children: [
           _navItem(Icons.home_outlined, 'Beranda', true, () {}),
           _navItem(Icons.calendar_month_outlined, 'Rencana', false, () {
-            _showMessage('Rencana (segera hadir)');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const RencanaPage()),
+            );
           }),
-          _navItem(Icons.favorite_border, 'Favorit', false, () {
-            _showMessage('Favorit (segera hadir)');
+          _navItem(Icons.chat_bubble_outline, 'Chat', false, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ChatPage(),
+              ),
+            );
           }),
           _navItem(Icons.menu, 'Lainnya', false, () {
-            // TODO: menu "Lainnya" (frame kedua di Figma)
-            _showMessage('Lainnya (segera hadir)');
+            setState(() {
+              _menuOpen = true;
+            });
           }),
+        ],
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------
+  // Menu "Lainnya": panel kaca berisi kotak-kotak fitur
+  // ---------------------------------------------------------------
+  Widget _buildMenuPanel() {
+    return _glass(
+      radius: 28,
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
+      child: Column(
+        children: [
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 4,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 0.85,
+              children: _menuItems.map((item) {
+                return GestureDetector(
+                  onTap: () => _handleMenuTap(item.label),
+                  child: _featureTile(item.icon, item.label),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _navItem(Icons.cancel_outlined, 'Tutup', false, () {
+                setState(() {
+                  _menuOpen = false;
+                });
+              }),
+              _navItem(Icons.menu, 'Lainnya', true, () {}),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Tampilan saat menu Lainnya terbuka: sapaan, kartu, lalu panel menu.
+  Widget _buildMenuView() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildGreeting(),
+          const SizedBox(height: 16),
+          _buildBannerCard(),
+          const SizedBox(height: 16),
+          Expanded(child: _buildMenuPanel()),
+        ],
+      ),
+    );
+  }
+
+  // Tampilan Home biasa (bisa di-scroll).
+  Widget _buildHomeScroll() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 110),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildGreeting(),
+          const SizedBox(height: 16),
+          _buildBannerCard(),
+          const SizedBox(height: 18),
+          _sectionHeader('Fitur Cepat', action: 'Lihat Semua'),
+          const SizedBox(height: 10),
+          _buildQuickFeatures(),
+          const SizedBox(height: 18),
+          _buildTasks(),
+          const SizedBox(height: 18),
+          _sectionHeader('Rekomendasi'),
+          const SizedBox(height: 10),
+          _buildRecommendation(),
         ],
       ),
     );
@@ -621,53 +941,31 @@ Widget _buildBell() {
           SafeArea(
             child: Column(
               children: [
-                // Padding kiri-kanan dihapus agar header bisa mentok kiri
+                // Padding kanan dihapus agar header bisa mentok kiri
                 Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 12, left: 16),
                   child: _buildHeader(),
                 ),
                 Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 110),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildGreeting(),
-                        const SizedBox(height: 16),
-                        // Kartu kaca besar (kosong di desain).
-                        // TODO: isi dengan hitung mundur hari H / banner.
-                        _glass(child: const SizedBox(height: 150)),
-                        const SizedBox(height: 18),
-                        _sectionHeader('Fitur Cepat', action: 'Lihat Semua'),
-                        const SizedBox(height: 10),
-                        _buildQuickFeatures(),
-                        const SizedBox(height: 18),
-                        _buildTasks(),
-                        const SizedBox(height: 18),
-                        _sectionHeader('Rekomendasi'),
-                        const SizedBox(height: 10),
-                        _buildRecommendation(),
-                      ],
-                    ),
-                  ),
+                  child: _menuOpen ? _buildMenuView() : _buildHomeScroll(),
                 ),
               ],
             ),
           ),
-          // Navigasi bawah mengambang di atas konten.
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                child: _buildBottomNav(),
+          // Navigasi bawah mengambang (disembunyikan saat menu Lainnya terbuka).
+          if (!_menuOpen)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: _buildBottomNav(),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
-
 }
