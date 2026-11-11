@@ -10,6 +10,7 @@ import 'pencarian_page.dart';
 import 'tabungan_pages.dart';
 import 'chat_page.dart';
 import 'atur_tanggal_page.dart';
+import 'user_page.dart';
 
 // Data tugas sementara (dummy). TODO: ganti dengan data dari API.
 class _Task {
@@ -136,9 +137,7 @@ class _HomePageState extends State<HomePage> {
       case 'Tabungan':
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const TabunganPage(),
-          ),
+          MaterialPageRoute(builder: (context) => const TabunganPage()),
         );
         break;
 
@@ -149,8 +148,7 @@ class _HomePageState extends State<HomePage> {
       case 'Chat':
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const ChatPage()),
+          MaterialPageRoute(builder: (context) => const ChatPage()),
         );
         break;
 
@@ -503,54 +501,51 @@ class _HomePageState extends State<HomePage> {
   // Kotak fitur (dipakai di Fitur Cepat dan menu Lainnya)
   // ---------------------------------------------------------------
   Widget _featureTile(IconData icon, String label) {
-  return _glass(
-    radius: 16,
-    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, color: _textDark, size: 28),
-        const SizedBox(height: 6),
-        SizedBox(
-          height: 28,
-          child: Center(
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 10,
-                color: _textDark,
+    return _glass(
+      radius: 16,
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: _textDark, size: 28),
+          const SizedBox(height: 6),
+          SizedBox(
+            height: 28,
+            child: Center(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 10, color: _textDark),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   Widget _quickItem(IconData icon, String label) {
-  return Expanded(
-    child: GestureDetector(
-      onTap: () => _handleMenuTap(label),
-      child: _featureTile(icon, label),
-    ),
-  );
-}
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _handleMenuTap(label),
+        child: _featureTile(icon, label),
+      ),
+    );
+  }
 
   Widget _buildQuickFeatures() {
-  return Row(
-    children: [
-      _quickItem(Icons.calendar_month_outlined, 'Atur Tanggal'),
-      const SizedBox(width: 10),
-      _quickItem(Icons.search, 'Cari Layanan'),
-      const SizedBox(width: 10),
-      _quickItem(Icons.monetization_on_outlined, 'Tabungan'),
-      const SizedBox(width: 10),
-      _quickItem(Icons.headset_mic_outlined, 'Asisten'),
-    ],
-  );
-}
+    return Row(
+      children: [
+        _quickItem(Icons.calendar_month_outlined, 'Atur Tanggal'),
+        const SizedBox(width: 10),
+        _quickItem(Icons.search, 'Cari Layanan'),
+        const SizedBox(width: 10),
+        _quickItem(Icons.monetization_on_outlined, 'Tabungan'),
+        const SizedBox(width: 10),
+        _quickItem(Icons.headset_mic_outlined, 'Asisten'),
+      ],
+    );
+  }
 
   // ---------------------------------------------------------------
   // Tugas Mendatang
@@ -813,15 +808,14 @@ class _HomePageState extends State<HomePage> {
           _navItem(Icons.chat_bubble_outline, 'Chat', false, () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const ChatPage(),
-              ),
+              MaterialPageRoute(builder: (context) => const ChatPage()),
             );
           }),
-          _navItem(Icons.menu, 'Lainnya', false, () {
-            setState(() {
-              _menuOpen = true;
-            });
+          _navItem(Icons.person_outline, 'User', false, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const UserPage()),
+            );
           }),
         ],
       ),
@@ -860,7 +854,12 @@ class _HomePageState extends State<HomePage> {
                   _menuOpen = false;
                 });
               }),
-              _navItem(Icons.menu, 'Lainnya', true, () {}),
+              _navItem(Icons.person_outline, 'User', true, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const UserPage()),
+                );
+              }),
             ],
           ),
         ],
@@ -868,7 +867,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Tampilan saat menu Lainnya terbuka: sapaan, kartu, lalu panel menu.
+  // Tampilan saat menu User terbuka: sapaan, kartu, lalu panel menu.
   Widget _buildMenuView() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
