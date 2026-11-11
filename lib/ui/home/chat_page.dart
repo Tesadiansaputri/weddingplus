@@ -1,11 +1,12 @@
-
 import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_wedding_planning_system/ui/asisten/asisten_page.dart';
 
-import 'rencana_page.dart';
+import '../bottom_navigation.dart';
+import 'detail_chat_page.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -41,8 +42,7 @@ class _ChatPageState extends State<ChatPage> {
   // Isi token JWT dari hasil login jika API membutuhkan autentikasi.
   String? _token;
 
-  final TextEditingController _searchController =
-      TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   List<_ChatConversation> _conversations = [];
 
@@ -51,17 +51,39 @@ class _ChatPageState extends State<ChatPage> {
 
   String _selectedFilter = 'Semua';
 
-  final List<String> _filters = [
-    'Semua',
-    'Belum dibaca',
-    'Vendor',
-  ];
+  final List<String> _filters = ['Semua', 'Belum dibaca', 'Vendor'];
 
   @override
-  void initState() {
-    super.initState();
-    _fetchConversations();
-  }
+  @override
+void initState() {
+  super.initState();
+
+  _conversations = [
+    _ChatConversation(
+      id: '1',
+      name: 'The Royale Hall',
+      category: 'Rani · Venue · Tegal',
+      message:
+          'Sudah, Kak. Termasuk venue, katering, dan dekorasi dasar.',
+      time: '09.44',
+      initial: 'TR',
+      unreadCount: 1,
+      type: 'vendor',
+      isUnread: true,
+    ),
+    _ChatConversation(
+      id: '2',
+      name: 'Wedding Organizer',
+      category: 'Admin · Wedding Organizer',
+      message: 'Terima kasih sudah menghubungi kami.',
+      time: 'Kemarin',
+      initial: 'WO',
+      unreadCount: 0,
+      type: 'vendor',
+      isUnread: false,
+    ),
+  ];
+}
 
   @override
   void dispose() {
@@ -104,8 +126,7 @@ class _ChatPageState extends State<ChatPage> {
         Uri.parse('$_baseUrl$_chatEndpoint'),
         headers: {
           'Content-Type': 'application/json',
-          if (_token != null)
-            'Authorization': 'Bearer $_token',
+          if (_token != null) 'Authorization': 'Bearer $_token',
         },
       );
 
@@ -115,17 +136,13 @@ class _ChatPageState extends State<ChatPage> {
         // TODO BACKEND:
         // Sesuaikan jika response backend menggunakan
         // decoded['data']['items'] atau struktur lainnya.
-        final dynamic rawData =
-            decoded is List ? decoded : decoded['data'];
+        final dynamic rawData = decoded is List ? decoded : decoded['data'];
 
         if (rawData is! List) {
-          throw Exception(
-            'Format response daftar chat tidak sesuai',
-          );
+          throw Exception('Format response daftar chat tidak sesuai');
         }
 
-        final loadedConversations =
-            rawData.map<_ChatConversation>((item) {
+        final loadedConversations = rawData.map<_ChatConversation>((item) {
           // TODO BACKEND:
           // Sesuaikan setiap nama field dengan response API.
           return _ChatConversation(
@@ -135,8 +152,7 @@ class _ChatPageState extends State<ChatPage> {
             message: (item['message'] ?? '').toString(),
             time: (item['time'] ?? '').toString(),
             initial: (item['initial'] ?? '').toString(),
-            unreadCount:
-                (item['unreadCount'] as num?)?.toInt() ?? 0,
+            unreadCount: (item['unreadCount'] as num?)?.toInt() ?? 0,
             type: (item['type'] ?? 'vendor').toString(),
             isUnread: item['isUnread'] == true,
           );
@@ -194,16 +210,11 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   int get _unreadTotal {
-    return _conversations.fold(
-      0,
-      (total, chat) => total + chat.unreadCount,
-    );
+    return _conversations.fold(0, (total, chat) => total + chat.unreadCount);
   }
 
   int get _vendorTotal {
-    return _conversations
-        .where((chat) => chat.type == 'vendor')
-        .length;
+    return _conversations.where((chat) => chat.type == 'vendor').length;
   }
 
   void _showMessage(String message) {
@@ -228,19 +239,14 @@ class _ChatPageState extends State<ChatPage> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 10,
-          sigmaY: 10,
-        ),
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           width: double.infinity,
           padding: padding,
           decoration: BoxDecoration(
             color: const Color(0x99FFFFFF),
             borderRadius: BorderRadius.circular(radius),
-            border: Border.all(
-              color: const Color(0x99FFFFFF),
-            ),
+            border: Border.all(color: const Color(0x99FFFFFF)),
           ),
           child: child,
         ),
@@ -263,11 +269,7 @@ class _ChatPageState extends State<ChatPage> {
           errorBuilder: (context, error, stackTrace) {
             return const Text(
               'wedding+',
-              style: TextStyle(
-                fontFamily: _serif,
-                fontSize: 23,
-                color: _rose,
-              ),
+              style: TextStyle(fontFamily: _serif, fontSize: 23, color: _rose),
             );
           },
         ),
@@ -279,18 +281,12 @@ class _ChatPageState extends State<ChatPage> {
         ),
         const SizedBox(width: 7),
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 7,
-            vertical: 5,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(25),
             boxShadow: [
-              BoxShadow(
-                color: _brown.withValues(alpha: 0.12),
-                blurRadius: 10,
-              ),
+              BoxShadow(color: _brown.withValues(alpha: 0.12), blurRadius: 10),
             ],
           ),
           child: const Row(
@@ -298,18 +294,10 @@ class _ChatPageState extends State<ChatPage> {
               CircleAvatar(
                 radius: 11,
                 backgroundColor: _pink,
-                child: Icon(
-                  Icons.person,
-                  size: 15,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.person, size: 15, color: Colors.white),
               ),
               SizedBox(width: 5),
-              Icon(
-                Icons.keyboard_arrow_down,
-                size: 17,
-                color: _textDark,
-              ),
+              Icon(Icons.keyboard_arrow_down, size: 17, color: _textDark),
             ],
           ),
         ),
@@ -331,20 +319,13 @@ class _ChatPageState extends State<ChatPage> {
           color: Colors.white,
           shape: BoxShape.circle,
           boxShadow: [
-            BoxShadow(
-              color: _brown.withValues(alpha: 0.12),
-              blurRadius: 10,
-            ),
+            BoxShadow(color: _brown.withValues(alpha: 0.12), blurRadius: 10),
           ],
         ),
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Icon(
-              icon,
-              size: 19,
-              color: _textDark,
-            ),
+            Icon(icon, size: 19, color: _textDark),
             if (notification)
               Positioned(
                 top: 7,
@@ -374,19 +355,12 @@ class _ChatPageState extends State<ChatPage> {
       children: [
         Text(
           'Chat',
-          style: TextStyle(
-            fontFamily: _serif,
-            fontSize: 25,
-            color: _textDark,
-          ),
+          style: TextStyle(fontFamily: _serif, fontSize: 25, color: _textDark),
         ),
         SizedBox(height: 2),
         Text(
           'Semua cerita menuju hari bahagiamu.',
-          style: TextStyle(
-            fontSize: 10,
-            color: _hint,
-          ),
+          style: TextStyle(fontSize: 10, color: _hint),
         ),
       ],
     );
@@ -395,17 +369,10 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildSearch() {
     return _glass(
       radius: 30,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 2,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       child: Row(
         children: [
-          const Icon(
-            Icons.search,
-            size: 18,
-            color: _brown,
-          ),
+          const Icon(Icons.search, size: 18, color: _brown),
           const SizedBox(width: 8),
           Expanded(
             child: TextField(
@@ -413,16 +380,10 @@ class _ChatPageState extends State<ChatPage> {
               onChanged: (_) {
                 setState(() {});
               },
-              style: const TextStyle(
-                fontSize: 10,
-                color: _textDark,
-              ),
+              style: const TextStyle(fontSize: 10, color: _textDark),
               decoration: const InputDecoration(
                 hintText: 'Cari nama atau pesan...',
-                hintStyle: TextStyle(
-                  fontSize: 9,
-                  color: _hint,
-                ),
+                hintStyle: TextStyle(fontSize: 9, color: _hint),
                 border: InputBorder.none,
                 isDense: true,
               ),
@@ -431,14 +392,11 @@ class _ChatPageState extends State<ChatPage> {
           if (_searchController.text.isNotEmpty)
             GestureDetector(
               onTap: () {
-                _searchController.clear();
-                setState(() {});
+                setState(() {
+                  _searchController.clear();
+                });
               },
-              child: const Icon(
-                Icons.close,
-                size: 15,
-                color: _hint,
-              ),
+              child: const Icon(Icons.close, size: 15, color: _hint),
             ),
         ],
       ),
@@ -471,19 +429,12 @@ class _ChatPageState extends State<ChatPage> {
               });
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 7,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
               decoration: BoxDecoration(
-                color: selected ? _rose : Colors.white.withValues(
-                  alpha: 0.65,
-                ),
+                color: selected ? _rose : Colors.white.withValues(alpha: 0.65),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: selected
-                      ? _rose
-                      : _pink.withValues(alpha: 0.5),
+                  color: selected ? _rose : _pink.withValues(alpha: 0.5),
                 ),
               ),
               child: Text(
@@ -507,11 +458,13 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildAssistantCard() {
     return GestureDetector(
       onTap: () {
-        // TODO BACKEND:
-        // Arahkan ke halaman chatbot AI.
-        // Kirim ID user atau conversation ID jika diperlukan.
-        _showMessage('Asisten Wedding+ segera hadir');
-      },
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const AsistenPage(),
+    ),
+  );
+},
       child: _glass(
         radius: 13,
         padding: const EdgeInsets.all(10),
@@ -524,11 +477,7 @@ class _ChatPageState extends State<ChatPage> {
                 color: Color(0xFFF0D7D2),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.auto_awesome,
-                color: _rose,
-                size: 20,
-              ),
+              child: const Icon(Icons.auto_awesome, color: _rose, size: 20),
             ),
             const SizedBox(width: 9),
             const Expanded(
@@ -546,11 +495,7 @@ class _ChatPageState extends State<ChatPage> {
                   SizedBox(height: 3),
                   Text(
                     'Yuk, fokus ke tiga prioritas persiapanmu minggu ini.',
-                    style: TextStyle(
-                      fontSize: 8,
-                      height: 1.4,
-                      color: _hint,
-                    ),
+                    style: TextStyle(fontSize: 8, height: 1.4, color: _hint),
                   ),
                 ],
               ),
@@ -560,17 +505,10 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 const Text(
                   '09.42',
-                  style: TextStyle(
-                    fontSize: 7,
-                    color: _hint,
-                  ),
+                  style: TextStyle(fontSize: 7, color: _hint),
                 ),
                 const SizedBox(height: 8),
-                Icon(
-                  Icons.chevron_right,
-                  color: _rose,
-                  size: 18,
-                ),
+                Icon(Icons.chevron_right, color: _rose, size: 18),
               ],
             ),
           ],
@@ -588,9 +526,7 @@ class _ChatPageState extends State<ChatPage> {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(25),
-          child: CircularProgressIndicator(
-            color: _rose,
-          ),
+          child: CircularProgressIndicator(color: _rose),
         ),
       );
     }
@@ -601,28 +537,18 @@ class _ChatPageState extends State<ChatPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Icon(
-              Icons.error_outline,
-              color: _rose,
-              size: 25,
-            ),
+            const Icon(Icons.error_outline, color: _rose, size: 25),
             const SizedBox(height: 8),
             const Text(
               'Gagal memuat percakapan',
-              style: TextStyle(
-                fontSize: 10,
-                color: _textDark,
-              ),
+              style: TextStyle(fontSize: 10, color: _textDark),
             ),
             const SizedBox(height: 5),
             TextButton(
               onPressed: _fetchConversations,
               child: const Text(
                 'Coba Lagi',
-                style: TextStyle(
-                  color: _rose,
-                  fontSize: 10,
-                ),
+                style: TextStyle(color: _rose, fontSize: 10),
               ),
             ),
           ],
@@ -639,10 +565,7 @@ class _ChatPageState extends State<ChatPage> {
         child: const Center(
           child: Text(
             'Belum ada percakapan.',
-            style: TextStyle(
-              fontSize: 10,
-              color: _hint,
-            ),
+            style: TextStyle(fontSize: 10, color: _hint),
           ),
         ),
       );
@@ -650,10 +573,7 @@ class _ChatPageState extends State<ChatPage> {
 
     return _glass(
       radius: 14,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 2,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       child: Column(
         children: conversations.map((chat) {
           return _buildConversationItem(chat);
@@ -665,22 +585,20 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildConversationItem(_ChatConversation chat) {
     return GestureDetector(
       onTap: () {
-        // TODO BACKEND:
-        // Navigasikan ke halaman detail chat.
-        // Gunakan chat.id sebagai ID percakapan.
-        // Contoh: ChatDetailPage(conversationId: chat.id)
-        _showMessage('Membuka percakapan ${chat.name}');
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 10,
-          horizontal: 0,
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailChatPage(
+            conversationId: chat.id,
+          ),
         ),
+      );
+    },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(
-              color: _pink.withValues(alpha: 0.35),
-            ),
+            bottom: BorderSide(color: _pink.withValues(alpha: 0.35)),
           ),
         ),
         child: Row(
@@ -719,10 +637,7 @@ class _ChatPageState extends State<ChatPage> {
                     chat.category,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 7,
-                      color: _hint,
-                    ),
+                    style: const TextStyle(fontSize: 7, color: _hint),
                   ),
                   const SizedBox(height: 5),
                   Text(
@@ -731,9 +646,7 @@ class _ChatPageState extends State<ChatPage> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 8,
-                      color: chat.isUnread
-                          ? _textDark
-                          : _hint,
+                      color: chat.isUnread ? _textDark : _hint,
                       fontWeight: chat.isUnread
                           ? FontWeight.w600
                           : FontWeight.normal,
@@ -748,10 +661,7 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 Text(
                   chat.time,
-                  style: const TextStyle(
-                    fontSize: 7,
-                    color: _brown,
-                  ),
+                  style: const TextStyle(fontSize: 7, color: _brown),
                 ),
                 const SizedBox(height: 9),
                 if (chat.unreadCount > 0)
@@ -764,13 +674,8 @@ class _ChatPageState extends State<ChatPage> {
                       shape: BoxShape.circle,
                     ),
                     child: Text(
-                      chat.unreadCount > 9
-                          ? '9+'
-                          : '${chat.unreadCount}',
-                      style: const TextStyle(
-                        fontSize: 8,
-                        color: Colors.white,
-                      ),
+                      chat.unreadCount > 9 ? '9+' : '${chat.unreadCount}',
+                      style: const TextStyle(fontSize: 8, color: Colors.white),
                     ),
                   ),
               ],
@@ -824,20 +729,14 @@ class _ChatPageState extends State<ChatPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 23,
-              color: selected ? _textDark : _hint,
-            ),
+            Icon(icon, size: 23, color: selected ? _textDark : _hint),
             const SizedBox(height: 2),
             Text(
               label,
               style: TextStyle(
                 fontSize: 9,
                 color: selected ? _textDark : _hint,
-                decoration: selected
-                    ? TextDecoration.underline
-                    : null,
+                decoration: selected ? TextDecoration.underline : null,
               ),
             ),
           ],
@@ -849,10 +748,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildBottomNav() {
     return _glass(
       radius: 28,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -860,36 +756,25 @@ class _ChatPageState extends State<ChatPage> {
             Icons.home_outlined,
             'Beranda',
             false,
-            () {
-              Navigator.pop(context);
-            },
+            () => navigateToBottomTab(context, AppRoutes.home),
           ),
           _navItem(
             Icons.calendar_month_outlined,
             'Rencana',
             false,
-            () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const RencanaPage(),
-                ),
-              );
-            },
+            () => navigateToBottomTab(context, AppRoutes.rencana),
           ),
           _navItem(
             Icons.chat_bubble_outline,
             'Chat',
             true,
-            () {},
+            () => navigateToBottomTab(context, AppRoutes.chat, isCurrent: true),
           ),
           _navItem(
-            Icons.menu,
-            'Lainnya',
+            Icons.person_outline,
+            'User',
             false,
-            () {
-              _showMessage('Menu Lainnya segera hadir');
-            },
+            () => navigateToBottomTab(context, AppRoutes.user),
           ),
         ],
       ),
@@ -916,10 +801,7 @@ class _ChatPageState extends State<ChatPage> {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFFFCF4F0),
-                        Color(0xFFF3D6D0),
-                      ],
+                      colors: [Color(0xFFFCF4F0), Color(0xFFF3D6D0)],
                     ),
                   ),
                 );
@@ -931,23 +813,13 @@ class _ChatPageState extends State<ChatPage> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    16,
-                    8,
-                    16,
-                    8,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: _buildHeader(),
                 ),
 
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(
-                      16,
-                      4,
-                      16,
-                      105,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 105),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -968,8 +840,7 @@ class _ChatPageState extends State<ChatPage> {
                         const SizedBox(height: 12),
 
                         Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
                               'Percakapan terbaru',
@@ -981,10 +852,7 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                             Text(
                               '$_vendorTotal vendor',
-                              style: const TextStyle(
-                                fontSize: 8,
-                                color: _hint,
-                              ),
+                              style: const TextStyle(fontSize: 8, color: _hint),
                             ),
                           ],
                         ),
@@ -1005,12 +873,7 @@ class _ChatPageState extends State<ChatPage> {
             child: SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  16,
-                  0,
-                  16,
-                  12,
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: _buildBottomNav(),
               ),
             ),

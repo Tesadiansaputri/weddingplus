@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-import 'rencana_page.dart';
+import 'bottom_navigation.dart';
 
 class TabunganPage extends StatefulWidget {
   const TabunganPage({super.key});
@@ -867,38 +867,29 @@ class _TabunganPageState extends State<TabunganPage> {
             Icons.home_outlined,
             'Beranda',
             false,
-            () {
-              Navigator.pop(context);
-            },
+            () => navigateToBottomTab(context, AppRoutes.home),
           ),
           _navItem(
             Icons.calendar_month_outlined,
             'Rencana',
-            false,
-            () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const RencanaPage(),
-                ),
-              );
-            },
+            true,
+            () => navigateToBottomTab(
+              context,
+              AppRoutes.rencana,
+              isCurrent: true,
+            ),
           ),
           _navItem(
             Icons.chat_bubble_outline,
             'Chat',
             false,
-            () {
-              _showMessage('Chat (segera hadir)');
-            },
+            () => navigateToBottomTab(context, AppRoutes.chat),
           ),
           _navItem(
-            Icons.menu,
-            'Lainnya',
+            Icons.person_outline,
+            'User',
             false,
-            () {
-              _showMessage('Menu Lainnya (segera hadir)');
-            },
+            () => navigateToBottomTab(context, AppRoutes.user),
           ),
         ],
       ),

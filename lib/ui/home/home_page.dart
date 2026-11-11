@@ -1,16 +1,18 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
-import '../helpers/google_auth.dart';
-import '../helpers/session.dart';
-import 'login_page.dart';
-import 'rencana_page.dart';
-import 'pencarian_page.dart';
-import 'tabungan_pages.dart';
+import 'package:smart_wedding_planning_system/ui/asisten/asisten_page.dart';
+import '../bottom_navigation.dart';
+import '../../helpers/google_auth.dart';
+import '../../helpers/session.dart';
+import '../login_page.dart';
+import '../pencarian/pencarian_page.dart';
+import '../tabungan_pages.dart';
 import 'chat_page.dart';
-import 'atur_tanggal_page.dart';
-import 'user_page.dart';
+import '../atur_tanggal_page.dart';
+import '../user_page.dart';
+import 'package:smart_wedding_planning_system/ui/rencana/berkas_booking.dart';
+
 
 // Data tugas sementara (dummy). TODO: ganti dengan data dari API.
 class _Task {
@@ -119,48 +121,67 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleMenuTap(String menu) {
-    switch (menu) {
-      case 'Cari Layanan':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const PencarianPage()),
-        );
-        break;
+  switch (menu) {
+    case 'Cari Layanan':
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PencarianPage(),
+        ),
+      );
+      break;
 
-      case 'Atur Tanggal':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const AturTanggalPage()),
-        );
-        break;
+    case 'Atur Tanggal':
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AturTanggalPage(),
+        ),
+      );
+      break;
 
-      case 'Tabungan':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const TabunganPage()),
-        );
-        break;
+    case 'Tabungan':
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const TabunganPage(),
+        ),
+      );
+      break;
 
-      case 'Asisten':
-        _showMessage('Fitur Asisten segera hadir');
-        break;
+    case 'Asisten':
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AsistenPage(),
+        ),
+      );
+      break;
 
-      case 'Chat':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ChatPage()),
-        );
-        break;
+    case 'scanberkas':
+    case 'Berkas':
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const BerkasBookingPage(),
+        ),
+      );
+      break;
 
-      case 'Jadwal':
-        _showMessage('Fitur Jadwal segera hadir');
-        break;
+    case 'Chat':
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ChatPage(),
+        ),
+      );
+      break;
 
-      case 'Berkas':
-        _showMessage('Fitur Berkas segera hadir');
-        break;
-    }
+    case 'Jadwal':
+      _showMessage('Fitur Jadwal segera hadir');
+      break;
   }
+}
 
   // Kotak kaca (blur + putih transparan) yang dipakai di banyak tempat.
   Widget _glass({
@@ -543,6 +564,9 @@ class _HomePageState extends State<HomePage> {
         _quickItem(Icons.monetization_on_outlined, 'Tabungan'),
         const SizedBox(width: 10),
         _quickItem(Icons.headset_mic_outlined, 'Asisten'),
+        const SizedBox(width: 10),
+       _quickItem(Icons.document_scanner, 'Berkas'),
+        const SizedBox(width: 10),
       ],
     );
   }
@@ -798,24 +822,17 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _navItem(Icons.home_outlined, 'Beranda', true, () {}),
+          _navItem(Icons.home_outlined, 'Beranda', true, () {
+            navigateToBottomTab(context, AppRoutes.home, isCurrent: true);
+          }),
           _navItem(Icons.calendar_month_outlined, 'Rencana', false, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const RencanaPage()),
-            );
+            navigateToBottomTab(context, AppRoutes.rencana);
           }),
           _navItem(Icons.chat_bubble_outline, 'Chat', false, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ChatPage()),
-            );
+            navigateToBottomTab(context, AppRoutes.chat);
           }),
           _navItem(Icons.person_outline, 'User', false, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const UserPage()),
-            );
+            navigateToBottomTab(context, AppRoutes.user);
           }),
         ],
       ),

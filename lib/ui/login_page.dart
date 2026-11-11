@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../helpers/google_auth.dart';
 import '../helpers/session.dart';
-import 'home_page.dart';
+import 'home/home_page.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {

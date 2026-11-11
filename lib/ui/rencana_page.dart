@@ -1,11 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:smart_wedding_planning_system/ui/chat_page.dart';
-import 'package:smart_wedding_planning_system/ui/home_page.dart';
 
 import '../helpers/google_auth.dart';
 import '../helpers/session.dart';
+import 'bottom_navigation.dart';
 import 'login_page.dart';
 
 class _Task {
@@ -632,27 +631,16 @@ class _RencanaPageState extends State<RencanaPage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _navItem(Icons.home_outlined, 'Beranda', false, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
+            navigateToBottomTab(context, AppRoutes.home);
           }),
-          _navItem(Icons.calendar_month_outlined, 'Rencana', false, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const RencanaPage()),
-            );
+          _navItem(Icons.calendar_month_outlined, 'Rencana', true, () {
+            navigateToBottomTab(context, AppRoutes.rencana, isCurrent: true);
           }),
           _navItem(Icons.chat_bubble_outline, 'Chat', false, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ChatPage(),
-              ),
-            );
+            navigateToBottomTab(context, AppRoutes.chat);
           }),
-          _navItem(Icons.menu, 'Lainnya', false, () {
-            _showMessage('Menu Lainnya belum tersedia');
+          _navItem(Icons.person_outline, 'User', false, () {
+            navigateToBottomTab(context, AppRoutes.user);
           }),
         ],
       ),

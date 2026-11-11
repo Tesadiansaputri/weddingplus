@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'bottom_navigation.dart';
+
 class UserPage extends StatefulWidget {
   const UserPage({
     super.key,
@@ -155,109 +157,124 @@ class _UserPageState extends State<UserPage> {
   // ==================================================
 
   Widget _buildHeader() {
-    return Row(
-      children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.favorite_border,
-              color: _rose,
-              size: 28,
-            ),
-            const SizedBox(width: 5),
-            const Text(
-              'wedding+',
-              style: TextStyle(
-                fontFamily: 'PlayfairDisplay',
-                fontSize: 21,
-                color: _rose,
-              ),
-            ),
-          ],
-        ),
-
-        const Spacer(),
-
-        // NOTIFIKASI
-        _headerButton(
-          Icons.notifications_none_rounded,
-          onTap: () {
-            _showMessage('Fitur notifikasi belum tersedia');
-          },
-          showDot: false,
-        ),
-
-        const SizedBox(width: 9),
-
-        // FOTO PROFIL DAN DROPDOWN
-        GestureDetector(
-          onTap: _showEditProfile,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 5,
-              vertical: 4,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Row(
-              children: [
-                _profileImage(size: 25),
-                const SizedBox(width: 5),
-                const Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 19,
-                  color: _dark,
-                ),
-              ],
-            ),
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      _buildLogo(),
+      Transform.translate(
+        offset: const Offset(0, -8),
+        child: Padding(
+          padding: const EdgeInsets.only(right: 20),
+          child: Row(
+            children: [
+              _buildBell(),
+              const SizedBox(width: 10),
+              _buildProfileMenu(),
+            ],
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
-  Widget _headerButton(
-    IconData icon, {
-    required VoidCallback onTap,
-    bool showDot = false,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              size: 21,
-              color: _dark,
-            ),
+Widget _buildLogo() {
+  return Image.asset(
+    'assets/images/logo_header.png',
+    width: 145,
+    height: 55,
+    fit: BoxFit.contain,
+    alignment: Alignment.centerLeft,
+    errorBuilder: (context, error, stackTrace) {
+      return const Text(
+        'wedding+',
+        style: TextStyle(
+          fontFamily: 'PlayfairDisplay',
+          fontSize: 22,
+          color: _rose,
+        ),
+      );
+    },
+  );
+}
+
+Widget _buildBell() {
+  return GestureDetector(
+    onTap: () => _showMessage('Notifikasi belum tersedia'),
+    child: Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: _rose.withOpacity(0.15),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
           ),
-
-          if (showDot)
-            Positioned(
-              right: 4,
-              top: 4,
-              child: Container(
-                width: 7,
-                height: 7,
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
         ],
       ),
-    );
-  }
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          const Icon(
+            Icons.notifications_none,
+            size: 22,
+            color: _dark,
+          ),
+          Positioned(
+            top: 9,
+            right: 9,
+            child: Container(
+              width: 8,
+              height: 8,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildProfileMenu() {
+  return GestureDetector(
+    onTap: _showEditProfile,
+    child: Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 5,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: _rose.withOpacity(0.15),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          _profileImage(size: 28),
+          const SizedBox(width: 5),
+          const Icon(
+            Icons.keyboard_arrow_down,
+            size: 19,
+            color: _dark,
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
   // ==================================================
   // JUDUL HALAMAN
@@ -784,96 +801,109 @@ class _UserPageState extends State<UserPage> {
   // ==================================================
 
   Widget _buildBottomNav() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 9,
+  return Container(
+    margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+    padding: const EdgeInsets.symmetric(
+      horizontal: 8,
+      vertical: 11,
+    ),
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.70),
+      borderRadius: BorderRadius.circular(28),
+      border: Border.all(
+        color: Colors.white,
+        width: 1.2,
       ),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.75),
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(
-          color: Colors.white,
-          width: 1.2,
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _navItem(
+          Icons.home_outlined,
+          'Beranda',
+          false,
+          widget.onBerandaTap ??
+              () => navigateToBottomTab(
+                context,
+                AppRoutes.home,
+              ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+        _navItem(
+          Icons.calendar_month_outlined,
+          'Rencana',
+          false,
+          widget.onRencanaTap ??
+              () => navigateToBottomTab(
+                context,
+                AppRoutes.rencana,
+              ),
+        ),
+
+        _navItem(
+          Icons.chat_bubble_outline,
+          'Chat',
+          false,
+          widget.onChatTap ??
+              () => navigateToBottomTab(
+                context,
+                AppRoutes.chat,
+              ),
+        ),
+
+        _navItem(
+          Icons.person_outline,
+          'User',
+          true,
+          () => navigateToBottomTab(
+            context,
+            AppRoutes.user,
+            isCurrent: true,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _navItem(
+  IconData icon,
+  String label,
+  bool selected,
+  VoidCallback onTap,
+) {
+  return GestureDetector(
+    onTap: onTap,
+    behavior: HitTestBehavior.opaque,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 9),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          _navItem(
-            Icons.home_outlined,
-            'Beranda',
-            false,
-            widget.onBerandaTap ??
-                () => Navigator.pop(context),
+          Icon(
+            icon,
+            size: 23,
+            color: selected
+                ? _dark
+                : const Color(0xFF8E8582),
           ),
-
-          _navItem(
-            Icons.event_note_outlined,
-            'Rencana',
-            false,
-            widget.onRencanaTap ??
-                () => _showMessage('Navigasi Rencana belum dihubungkan.'),
-          ),
-
-          _navItem(
-            Icons.chat_bubble_outline,
-            'Chat',
-            false,
-            widget.onChatTap ??
-                () => _showMessage('Navigasi Chat belum dihubungkan.'),
-          ),
-
-          _navItem(
-            Icons.person_outline,
-            'User',
-            true,
-            () {},
+          const SizedBox(height: 3),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 9,
+              color: selected ? _dark : _hint,
+              decoration: selected
+                  ? TextDecoration.underline
+                  : TextDecoration.none,
+              decorationThickness: 2,
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _navItem(
-    IconData icon,
-    String label,
-    bool selected,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 9),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 24,
-              color: selected ? Colors.black : _dark,
-            ),
-
-            const SizedBox(height: 3),
-
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 9,
-                color: selected ? _dark : _hint,
-                decoration: selected
-                    ? TextDecoration.underline
-                    : TextDecoration.none,
-                decorationThickness: 2,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
+}
 
   // ==================================================
   // PESAN SEMENTARA

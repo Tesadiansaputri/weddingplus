@@ -3,9 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:smart_wedding_planning_system/helpers/google_auth.dart';
 import 'package:smart_wedding_planning_system/helpers/session.dart';
-import 'package:smart_wedding_planning_system/ui/home_page.dart';
 import 'package:smart_wedding_planning_system/ui/login_page.dart';
-import 'rencana_page.dart';
+import 'bottom_navigation.dart';
 
 class AturTanggalPage extends StatefulWidget {
   const AturTanggalPage({super.key});
@@ -921,19 +920,17 @@ class _AturTanggalPageState extends State<AturTanggalPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _navItem(Icons.home_outlined, 'Beranda', false, () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
+                navigateToBottomTab(context, AppRoutes.home);
               }),
               _navItem(
                 Icons.calendar_month_outlined,
                 'Rencana',
-                false,
+                true,
                 () {
-                  Navigator.push(
+                  navigateToBottomTab(
                     context,
-                    MaterialPageRoute(builder: (context) => const RencanaPage()),
+                    AppRoutes.rencana,
+                    isCurrent: true,
                   );
                 },
               ),
@@ -941,13 +938,13 @@ class _AturTanggalPageState extends State<AturTanggalPage> {
                 Icons.chat_bubble_outline,
                 'Chat',
                 false,
-                () => _showMessage('Fitur Chat segera hadir'),
+                () => navigateToBottomTab(context, AppRoutes.chat),
               ),
               _navItem(
-                Icons.menu,
-                'Lainnya',
+                Icons.person_outline,
+                'User',
                 false,
-                () => _showMessage('Menu Lainnya segera hadir'),
+                () => navigateToBottomTab(context, AppRoutes.user),
               ),
             ],
           ),
