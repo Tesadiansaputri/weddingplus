@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'dart:ui';
 
@@ -6,16 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 import '../bottom_navigation.dart';
 import 'booking_confirmation_page.dart';
 
-enum PaymentProofStatus {
-  empty,
-  uploaded,
-  pending,
-  rejected,
-}
+enum PaymentProofStatus { empty, uploaded, pending, rejected }
 
 class PembayaranBookingPage extends StatefulWidget {
   final String packageName;
@@ -60,13 +53,10 @@ class PembayaranBookingPage extends StatefulWidget {
   });
 
   @override
-  State<PembayaranBookingPage> createState() =>
-      _PembayaranBookingPageState();
+  State<PembayaranBookingPage> createState() => _PembayaranBookingPageState();
 }
 
-class _PembayaranBookingPageState
-    extends State<PembayaranBookingPage> {
-
+class _PembayaranBookingPageState extends State<PembayaranBookingPage> {
   static const Color _rose = Color(0xFFC58A85);
   static const Color _pink = Color(0xFFE7B6B0);
   static const Color _dark = Color(0xFF493B38);
@@ -93,10 +83,8 @@ class _PembayaranBookingPageState
     _status = widget.initialStatus;
   }
 
-  // ==============================
-  // NOTIFIKASI
-  // ==============================
 
+  // NOTIFIKASI
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -107,9 +95,7 @@ class _PembayaranBookingPageState
     );
   }
 
-  // ==============================
   // HEADER
-  // ==============================
 
   Widget _buildHeader() {
     return Row(
@@ -121,11 +107,7 @@ class _PembayaranBookingPageState
           errorBuilder: (_, __, ___) {
             return const Text(
               '♡ wedding+',
-              style: TextStyle(
-                fontFamily: _serif,
-                fontSize: 19,
-                color: _rose,
-              ),
+              style: TextStyle(fontFamily: _serif, fontSize: 19, color: _rose),
             );
           },
         ),
@@ -146,10 +128,7 @@ class _PembayaranBookingPageState
                   color: Colors.white,
                   shape: BoxShape.circle,
                   boxShadow: [
-                    BoxShadow(
-                      color: Color(0x22000000),
-                      blurRadius: 8,
-                    ),
+                    BoxShadow(color: Color(0x22000000), blurRadius: 8),
                   ],
                 ),
                 child: Stack(
@@ -183,30 +162,20 @@ class _PembayaranBookingPageState
             PopupMenuButton<String>(
               onSelected: (value) {
                 if (value == 'logout') {
-                  _showMessage(
-                    'Silakan keluar melalui halaman Home',
-                  );
+                  _showMessage('Silakan keluar melalui halaman Home');
                 }
               },
               itemBuilder: (context) => const [
-                PopupMenuItem(
-                  value: 'logout',
-                  child: Text('Keluar'),
-                ),
+                PopupMenuItem(value: 'logout', child: Text('Keluar')),
               ],
               child: Container(
                 height: 38,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(22),
                   boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x22000000),
-                      blurRadius: 8,
-                    ),
+                    BoxShadow(color: Color(0x22000000), blurRadius: 8),
                   ],
                 ),
                 child: const Row(
@@ -214,18 +183,10 @@ class _PembayaranBookingPageState
                     CircleAvatar(
                       radius: 14,
                       backgroundColor: _pink,
-                      child: Icon(
-                        Icons.person,
-                        size: 17,
-                        color: Colors.white,
-                      ),
+                      child: Icon(Icons.person, size: 17, color: Colors.white),
                     ),
                     SizedBox(width: 3),
-                    Icon(
-                      Icons.keyboard_arrow_down,
-                      color: _dark,
-                      size: 20,
-                    ),
+                    Icon(Icons.keyboard_arrow_down, color: _dark, size: 20),
                   ],
                 ),
               ),
@@ -236,9 +197,9 @@ class _PembayaranBookingPageState
     );
   }
 
-  // ==============================
+
   // GLASS CONTAINER
-  // ==============================
+
 
   Widget _glass({
     required Widget child,
@@ -248,19 +209,14 @@ class _PembayaranBookingPageState
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 10,
-          sigmaY: 10,
-        ),
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           width: double.infinity,
           padding: padding,
           decoration: BoxDecoration(
             color: const Color(0x99FFFFFF),
             borderRadius: BorderRadius.circular(radius),
-            border: Border.all(
-              color: const Color(0x99FFFFFF),
-            ),
+            border: Border.all(color: const Color(0x99FFFFFF)),
           ),
           child: child,
         ),
@@ -268,29 +224,19 @@ class _PembayaranBookingPageState
     );
   }
 
-  // ==============================
   // JUDUL
-  // ==============================
 
   Widget _buildTitle() {
     return Row(
       children: [
         GestureDetector(
           onTap: () => Navigator.pop(context),
-          child: const Icon(
-            Icons.arrow_back,
-            size: 19,
-            color: _brown,
-          ),
+          child: const Icon(Icons.arrow_back, size: 19, color: _brown),
         ),
         const SizedBox(width: 12),
         const Text(
           'Pembayaran Booking',
-          style: TextStyle(
-            fontFamily: _serif,
-            fontSize: 20,
-            color: _dark,
-          ),
+          style: TextStyle(fontFamily: _serif, fontSize: 20, color: _dark),
         ),
       ],
     );
@@ -320,11 +266,7 @@ class _PembayaranBookingPageState
         children: [
           const Text(
             'Ringkasan Paket',
-            style: TextStyle(
-              fontFamily: _serif,
-              fontSize: 14,
-              color: _dark,
-            ),
+            style: TextStyle(fontFamily: _serif, fontSize: 14, color: _dark),
           ),
 
           const SizedBox(height: 9),
@@ -338,11 +280,7 @@ class _PembayaranBookingPageState
                   color: const Color(0xFFF3DDD7),
                   borderRadius: BorderRadius.circular(7),
                 ),
-                child: const Icon(
-                  Icons.image_outlined,
-                  color: _rose,
-                  size: 25,
-                ),
+                child: const Icon(Icons.image_outlined, color: _rose, size: 25),
               ),
 
               const SizedBox(width: 9),
@@ -362,17 +300,11 @@ class _PembayaranBookingPageState
                     const SizedBox(height: 3),
                     Text(
                       widget.packageLocation,
-                      style: const TextStyle(
-                        fontSize: 8,
-                        color: _hint,
-                      ),
+                      style: const TextStyle(fontSize: 8, color: _hint),
                     ),
                     Text(
                       '${widget.selectedDate} · ${widget.jumlahTamu} tamu',
-                      style: const TextStyle(
-                        fontSize: 8,
-                        color: _hint,
-                      ),
+                      style: const TextStyle(fontSize: 8, color: _hint),
                     ),
                   ],
                 ),
@@ -383,10 +315,7 @@ class _PembayaranBookingPageState
           const SizedBox(height: 10),
 
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 9,
-              vertical: 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
             decoration: BoxDecoration(
               color: const Color(0xFFF5E1DC),
               borderRadius: BorderRadius.circular(7),
@@ -396,10 +325,7 @@ class _PembayaranBookingPageState
               children: [
                 const Text(
                   'Total biaya',
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: _brown,
-                  ),
+                  style: TextStyle(fontSize: 9, color: _brown),
                 ),
                 Text(
                   widget.totalPrice,
@@ -417,9 +343,7 @@ class _PembayaranBookingPageState
     );
   }
 
-  // ==============================
   // INFORMASI PEMBAYARAN
-  // ==============================
 
   Widget _buildPaymentNotice() {
     return Container(
@@ -445,11 +369,7 @@ class _PembayaranBookingPageState
           Text(
             'Transfer ke rekening penyedia di bawah ini, '
             'bukan melalui payment gateway Wedding+.',
-            style: TextStyle(
-              fontSize: 8,
-              color: _dark,
-              height: 1.5,
-            ),
+            style: TextStyle(fontSize: 8, color: _dark, height: 1.5),
           ),
         ],
       ),
@@ -473,11 +393,7 @@ class _PembayaranBookingPageState
         children: [
           const Text(
             'Rekening Penyedia',
-            style: TextStyle(
-              fontFamily: _serif,
-              fontSize: 15,
-              color: _dark,
-            ),
+            style: TextStyle(fontFamily: _serif, fontSize: 15, color: _dark),
           ),
 
           const SizedBox(height: 7),
@@ -495,10 +411,7 @@ class _PembayaranBookingPageState
 
           const Text(
             'Nomor rekening',
-            style: TextStyle(
-              fontSize: 8,
-              color: _hint,
-            ),
+            style: TextStyle(fontSize: 8, color: _hint),
           ),
 
           const SizedBox(height: 3),
@@ -520,25 +433,15 @@ class _PembayaranBookingPageState
               OutlinedButton.icon(
                 onPressed: () async {
                   await Clipboard.setData(
-                    const ClipboardData(
-                      text: _accountNumber,
-                    ),
+                    const ClipboardData(text: _accountNumber),
                   );
 
                   if (mounted) {
-                    _showMessage(
-                      'Nomor rekening berhasil disalin',
-                    );
+                    _showMessage('Nomor rekening berhasil disalin');
                   }
                 },
-                icon: const Icon(
-                  Icons.copy,
-                  size: 12,
-                ),
-                label: const Text(
-                  'Salin',
-                  style: TextStyle(fontSize: 9),
-                ),
+                icon: const Icon(Icons.copy, size: 12),
+                label: const Text('Salin', style: TextStyle(fontSize: 9)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: _rose,
                   side: const BorderSide(color: _pink),
@@ -555,13 +458,7 @@ class _PembayaranBookingPageState
 
           const SizedBox(height: 10),
 
-          const Text(
-            'Atas nama',
-            style: TextStyle(
-              fontSize: 8,
-              color: _hint,
-            ),
-          ),
+          const Text('Atas nama', style: TextStyle(fontSize: 8, color: _hint)),
 
           const SizedBox(height: 3),
 
@@ -579,10 +476,7 @@ class _PembayaranBookingPageState
           const Text(
             'Data rekening contoh - konfirmasi rekening resmi '
             'kepada penyedia sebelum melakukan transfer.',
-            style: TextStyle(
-              fontSize: 7,
-              color: _rose,
-            ),
+            style: TextStyle(fontSize: 7, color: _rose),
           ),
         ],
       ),
@@ -612,11 +506,7 @@ class _PembayaranBookingPageState
         children: [
           const Text(
             'Cara Transfer',
-            style: TextStyle(
-              fontFamily: _serif,
-              fontSize: 15,
-              color: _dark,
-            ),
+            style: TextStyle(fontFamily: _serif, fontSize: 15, color: _dark),
           ),
 
           const SizedBox(height: 9),
@@ -667,9 +557,7 @@ class _PembayaranBookingPageState
     );
   }
 
-  // ==============================
   // STATUS BUKTI PEMBAYARAN
-  // ==============================
 
   Widget _buildStatusBox() {
     if (_status == PaymentProofStatus.empty) {
@@ -712,11 +600,7 @@ class _PembayaranBookingPageState
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            color: _rose,
-            size: 17,
-          ),
+          Icon(icon, color: _rose, size: 17),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -751,62 +635,54 @@ class _PembayaranBookingPageState
   // PILIH GAMBAR
   // ==============================
 
-  
-Future<void> _pickImage() async {
-  if (_status == PaymentProofStatus.pending) {
-    _showMessage(
-      'Bukti sedang menunggu verifikasi penyedia.',
-    );
-    return;
-  }
-
-  try {
-    final XFile? pickedFile = await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
-
-    if (pickedFile == null) return;
-
-    final file = File(pickedFile.path);
-
-    final int fileSize = await file.length();
-
-    if (fileSize > 5 * 1024 * 1024) {
-      _showMessage('Ukuran gambar maksimal 5 MB.');
+  Future<void> _pickImage() async {
+    if (_status == PaymentProofStatus.pending) {
+      _showMessage('Bukti sedang menunggu verifikasi penyedia.');
       return;
     }
 
-    if (!mounted) return;
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80,
+      );
 
-    setState(() {
-      _proofImage = file;
-      _status = PaymentProofStatus.uploaded;
-    });
+      if (pickedFile == null) return;
 
-    _showMessage('Bukti transfer berhasil dipilih.');
-  } on PlatformException catch (e) {
-    debugPrint('IMAGE PICKER ERROR: ${e.code} - ${e.message}');
+      final file = File(pickedFile.path);
 
-    _showMessage(
-      'Gagal membuka galeri: ${e.message ?? e.code}',
-    );
-  } catch (e, stackTrace) {
-    debugPrint('UPLOAD ERROR: $e');
-    debugPrintStack(stackTrace: stackTrace);
+      final int fileSize = await file.length();
 
-    _showMessage('Gagal memilih gambar: $e');
+      if (fileSize > 5 * 1024 * 1024) {
+        _showMessage('Ukuran gambar maksimal 5 MB.');
+        return;
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _proofImage = file;
+        _status = PaymentProofStatus.uploaded;
+      });
+
+      _showMessage('Bukti transfer berhasil dipilih.');
+    } on PlatformException catch (e) {
+      debugPrint('IMAGE PICKER ERROR: ${e.code} - ${e.message}');
+
+      _showMessage('Gagal membuka galeri: ${e.message ?? e.code}');
+    } catch (e, stackTrace) {
+      debugPrint('UPLOAD ERROR: $e');
+      debugPrintStack(stackTrace: stackTrace);
+
+      _showMessage('Gagal memilih gambar: $e');
+    }
   }
-}
 
 
-  // ==============================
   // KARTU UPLOAD
-  // ==============================
 
   Widget _buildUploadCard() {
-    final bool isPending =
-        _status == PaymentProofStatus.pending;
+    final bool isPending = _status == PaymentProofStatus.pending;
 
     return Container(
       width: double.infinity,
@@ -820,29 +696,21 @@ Future<void> _pickImage() async {
         children: [
           const Text(
             'Bukti Pembayaran',
-            style: TextStyle(
-              fontFamily: _serif,
-              fontSize: 15,
-              color: _dark,
-            ),
+            style: TextStyle(fontFamily: _serif, fontSize: 15, color: _dark),
           ),
 
           const SizedBox(height: 4),
 
           const Text(
             'Gambar JPG atau PNG · Maksimal 5 MB',
-            style: TextStyle(
-              fontSize: 8,
-              color: _hint,
-            ),
+            style: TextStyle(fontSize: 8, color: _hint),
           ),
 
           const SizedBox(height: 10),
 
           _buildStatusBox(),
 
-          if (_status != PaymentProofStatus.empty)
-            const SizedBox(height: 9),
+          if (_status != PaymentProofStatus.empty) const SizedBox(height: 9),
 
           if (_proofImage == null) ...[
             GestureDetector(
@@ -853,10 +721,7 @@ Future<void> _pickImage() async {
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFFBFA),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: _pink,
-                    style: BorderStyle.solid,
-                  ),
+                  border: Border.all(color: _pink, style: BorderStyle.solid),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -889,10 +754,7 @@ Future<void> _pickImage() async {
                     const Text(
                       'Ketuk untuk memilih gambar dari galeri atau kamera',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 8,
-                        color: _hint,
-                      ),
+                      style: TextStyle(fontSize: 8, color: _hint),
                     ),
                   ],
                 ),
@@ -904,9 +766,7 @@ Future<void> _pickImage() async {
               decoration: BoxDecoration(
                 color: const Color(0xFFFFFBFA),
                 borderRadius: BorderRadius.circular(9),
-                border: Border.all(
-                  color: const Color(0xFFEADBD7),
-                ),
+                border: Border.all(color: const Color(0xFFEADBD7)),
               ),
               child: Row(
                 children: [
@@ -937,22 +797,16 @@ Future<void> _pickImage() async {
                         const SizedBox(height: 4),
                         Text(
                           '${(_proofImage!.lengthSync() / 1024).toStringAsFixed(0)} KB',
-                          style: const TextStyle(
-                            fontSize: 8,
-                            color: _hint,
-                          ),
+                          style: const TextStyle(fontSize: 8, color: _hint),
                         ),
                         const SizedBox(height: 5),
                         Text(
                           _status == PaymentProofStatus.pending
                               ? 'Menunggu pemeriksaan'
                               : _status == PaymentProofStatus.rejected
-                                  ? 'Silakan perbaiki bukti'
-                                  : 'Siap dikirim ke penyedia',
-                          style: const TextStyle(
-                            fontSize: 8,
-                            color: _rose,
-                          ),
+                              ? 'Silakan perbaiki bukti'
+                              : 'Siap dikirim ke penyedia',
+                          style: const TextStyle(fontSize: 8, color: _rose),
                         ),
                       ],
                     ),
@@ -976,28 +830,20 @@ Future<void> _pickImage() async {
 
           const Text(
             'Pastikan nominal, nama pengirim, tanggal, dan tujuan transfer terlihat jelas.',
-            style: TextStyle(
-              fontSize: 8,
-              color: _hint,
-              height: 1.4,
-            ),
+            style: TextStyle(fontSize: 8, color: _hint, height: 1.4),
           ),
         ],
       ),
     );
   }
 
-  // ==============================
   // TOMBOL KIRIM
-  // ==============================
 
   Widget _buildSubmitButton() {
-    final bool isPending =
-        _status == PaymentProofStatus.pending;
+    final bool isPending = _status == PaymentProofStatus.pending;
 
-    final bool canSubmit =
-        _proofImage != null &&
-        _status != PaymentProofStatus.pending;
+    // Bukti gambar bersifat opsional. Tombol aktif selama belum menunggu verifikasi.
+    final bool canSubmit = _status != PaymentProofStatus.pending;
 
     return SizedBox(
       width: double.infinity,
@@ -1005,8 +851,8 @@ Future<void> _pickImage() async {
         onPressed: isPending
             ? null
             : canSubmit
-                ? _submitPayment
-                : null,
+            ? _submitPayment
+            : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: _rose,
           disabledBackgroundColor: const Color(0xFFEEDBD7),
@@ -1014,86 +860,66 @@ Future<void> _pickImage() async {
           disabledForegroundColor: _hint,
           elevation: 0,
           padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(9),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
         ),
         child: Text(
-          isPending
-              ? 'Menunggu Verifikasi'
-              : 'Kirim Bukti Pembayaran',
-          style: const TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.w600,
-          ),
+          isPending ? 'Menunggu Verifikasi' : 'Kirim Bukti Pembayaran',
+          style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w600),
         ),
       ),
     );
   }
 
   void _submitPayment() {
-  if (_proofImage == null) {
-    _showMessage(
-      'Pilih bukti transfer terlebih dahulu.',
+    // Cegah pengiriman berulang saat status sudah menunggu verifikasi.
+    if (_status == PaymentProofStatus.pending) return;
+
+    // Upload bukti tidak wajib. Pengajuan tetap diteruskan tanpa gambar.
+    setState(() {
+      _status = PaymentProofStatus.pending;
+    });
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookingConfirmationPage(
+          packageName: widget.packageName,
+          packageLocation: widget.packageLocation,
+          packageCapacity: widget.packageCapacity,
+          namaPria: widget.namaPria,
+          namaWanita: widget.namaWanita,
+          whatsapp: widget.whatsapp,
+          email: widget.email,
+          selectedDate: widget.selectedDate,
+
+          // DATA DETAIL ACARA
+          jumlahTamu: widget.jumlahTamu,
+          provinsi: widget.provinsi,
+          kota: widget.kota,
+          kecamatan: widget.kecamatan,
+          alamatLengkap: widget.alamat,
+          detailAlamat: widget.detailAlamat,
+          catatan: widget.catatan,
+
+          totalPrice: widget.totalPrice,
+        ),
+      ),
     );
-    return;
   }
 
-  setState(() {
-    _status = PaymentProofStatus.pending;
-  });
-
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (context) => BookingConfirmationPage(
-        packageName: widget.packageName,
-        packageLocation: widget.packageLocation,
-        packageCapacity: widget.packageCapacity,
-        namaPria: widget.namaPria,
-        namaWanita: widget.namaWanita,
-        whatsapp: widget.whatsapp,
-        email: widget.email,
-        selectedDate: widget.selectedDate,
-        jumlahTamu: widget.jumlahTamu,
-        totalPrice: widget.totalPrice,
-      ),
-    ),
-  );
-}
-
-  // ==============================
   // BOTTOM NAVIGATION
-  // ==============================
-
-  Widget _navItem(
-    IconData icon,
-    String label,
-    VoidCallback onTap,
-  ) {
+  Widget _navItem(IconData icon, String label, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 22,
-              color: _hint,
-            ),
+            Icon(icon, size: 22, color: _hint),
             const SizedBox(height: 2),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 9,
-                color: _hint,
-              ),
-            ),
+            Text(label, style: const TextStyle(fontSize: 9, color: _hint)),
           ],
         ),
       ),
@@ -1103,54 +929,37 @@ Future<void> _pickImage() async {
   Widget _buildBottomNav() {
     return _glass(
       radius: 28,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _navItem(
             Icons.home_outlined,
             'Beranda',
-            () => navigateToBottomTab(
-              context,
-              AppRoutes.home,
-            ),
+            () => navigateToBottomTab(context, AppRoutes.home),
           ),
           _navItem(
             Icons.calendar_month_outlined,
             'Rencana',
-            () => navigateToBottomTab(
-              context,
-              AppRoutes.rencana,
-            ),
+            () => navigateToBottomTab(context, AppRoutes.rencana),
           ),
           _navItem(
             Icons.chat_bubble_outline,
             'Chat',
-            () => navigateToBottomTab(
-              context,
-              AppRoutes.chat,
-            ),
+            () => navigateToBottomTab(context, AppRoutes.chat),
           ),
           _navItem(
             Icons.person_outline,
             'User',
-            () => navigateToBottomTab(
-              context,
-              AppRoutes.user,
-            ),
+            () => navigateToBottomTab(context, AppRoutes.user),
           ),
         ],
       ),
     );
   }
 
-  // ==============================
+  
   // BUILD
-  // ==============================
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1168,10 +977,7 @@ Future<void> _pickImage() async {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFFFCF4F0),
-                        Color(0xFFF3D6D0),
-                      ],
+                      colors: [Color(0xFFFCF4F0), Color(0xFFF3D6D0)],
                     ),
                   ),
                 );
@@ -1184,35 +990,24 @@ Future<void> _pickImage() async {
               children: [
                 // HEADER TETAP SAMA
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    16, 8, 16, 8,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: _buildHeader(),
                 ),
 
                 // ISI HALAMAN
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(
-                      16, 5, 16, 100,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(16, 5, 16, 100),
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildTitle(),
 
                         const Padding(
-                          padding: EdgeInsets.only(
-                            left: 29,
-                            top: 4,
-                          ),
+                          padding: EdgeInsets.only(left: 29, top: 4),
                           child: Text(
                             'Tanggal disetujui · Silakan selesaikan pembayaran',
-                            style: TextStyle(
-                              fontSize: 8,
-                              color: _hint,
-                            ),
+                            style: TextStyle(fontSize: 8, color: _hint),
                           ),
                         ),
 
@@ -1246,12 +1041,9 @@ Future<void> _pickImage() async {
                           child: Text(
                             _status == PaymentProofStatus.pending
                                 ? 'Bukti pembayaran sedang diperiksa oleh penyedia.'
-                                : 'Pilih gambar bukti transfer terlebih dahulu.',
+                                : 'Bukti transfer opsional. Kamu tetap bisa melanjutkan tanpa gambar.',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 8,
-                              color: _hint,
-                            ),
+                            style: const TextStyle(fontSize: 8, color: _hint),
                           ),
                         ),
                       ],
@@ -1268,9 +1060,7 @@ Future<void> _pickImage() async {
             child: SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  16, 0, 16, 12,
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: _buildBottomNav(),
               ),
             ),

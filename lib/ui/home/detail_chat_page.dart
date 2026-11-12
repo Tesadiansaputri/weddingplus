@@ -803,9 +803,9 @@ class _DetailChatPageState extends State<DetailChatPage> {
     );
   }
 
-  // ============================================================
+  
   // PESAN DARI DATABASE
-  // ============================================================
+  
 
   Widget _buildMessages() {
     if (_messages.isEmpty) {

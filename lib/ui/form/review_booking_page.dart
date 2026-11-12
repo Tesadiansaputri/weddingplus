@@ -149,6 +149,16 @@ class ReviewBookingPage extends StatelessWidget {
         namaWanita: namaWanita,
         whatsapp: whatsapp,
         email: email,
+
+        // DATA DETAIL ACARA
+        jumlahTamu: jumlahTamu,
+        provinsi: provinsi,
+        kota: kota,
+        kecamatan: kecamatan,
+        alamat: alamat,
+        detailAlamat: detailAlamat,
+        catatan: catatan,
+
         totalPrice: 'Rp100.000.000',
       ),
     ),
